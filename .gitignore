@@ -1,0 +1,19 @@
+# Python and temporary work files
+__pycache__/
+*.py[cod]
+tmp/
+
+# Browser/debug artifacts regenerated during scraping
+page_dump.html
+
+# Excel lock files
+~$*.xlsx
+
+# Local product data and generated media stay outside the agent-system repository
+images/
+output/
+*.xlsx
+
+# OS/editor files
+.DS_Store
+Thumbs.db

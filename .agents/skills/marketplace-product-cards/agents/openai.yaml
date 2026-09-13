@@ -1,0 +1,7 @@
+interface:
+  display_name: "Карточки товаров"
+  short_description: "Карточки 4:5 из каталога и фото"
+  default_prompt: "Use $marketplace-product-cards to analyze the catalog and generate marketplace-ready product cards for the selected items."
+
+policy:
+  allow_implicit_invocation: true
