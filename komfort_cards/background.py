@@ -52,12 +52,20 @@ def normalize_background(src: Path) -> Image.Image:
         return cover_resize(trim_uniform_border(img.convert("RGB")))
 
 
-def pick_source(batch: dict[str, Any], explicit: str | None) -> Path:
+def pick_source(batch: dict[str, Any], explicit: str | None, pick: int | None = None) -> Path:
+    if explicit and pick:
+        raise CardsError("Укажите либо --file, либо --pick, не оба.")
     if explicit:
         path = Path(explicit)
         if not path.is_file():
             raise CardsError(f"Файл фона не найден: {explicit}")
         return path
+    if pick:
+        generations = codex.chat_generations()
+        if not 1 <= pick <= len(generations):
+            raise CardsError(f"В этом чате нет генерации №{pick} (всего {len(generations)}).",
+                             hint="посмотрите номера: cards generations")
+        return generations[pick - 1]  # an explicit operator choice may reuse an image on purpose
     candidates = codex.generated_images()
     if not candidates:
         raise CardsError("Не нашёл сгенерированных Codex картинок.",
@@ -70,6 +78,27 @@ def pick_source(batch: dict[str, Any], explicit: str | None) -> Path:
     return newest
 
 
+def cmd_generations(args) -> dict[str, Any]:
+    """Number this chat's generated images (No.1 = first) so the operator can say "take the first background"."""
+    generations = codex.chat_generations()
+    if not generations:
+        say("В этом чате ещё нет сгенерированных картинок.")
+    used: dict[str, int] = {}
+    if args.batch or paths.OUTPUT_DIR.is_dir():
+        try:
+            batch = load_batch(resolve_batch_id(args.batch))
+            used = {i["background"]["source"]: i["n"] for i in batch["items"] if isinstance(i.get("background"), dict)}
+        except CardsError:
+            pass
+    rows = []
+    for k, path in enumerate(generations, start=1):
+        stamp = datetime.fromtimestamp(path.stat().st_mtime).strftime("%H:%M:%S")
+        note = f"  ← фон позиции {used[str(path)]}" if str(path) in used else ""
+        say(f"№{k}  {stamp}  {path.name}{note}")
+        rows.append({"k": k, "time": stamp, "path": str(path), "used_by": used.get(str(path))})
+    return {"generations": rows}
+
+
 def cmd_background(args) -> dict[str, Any]:
     batch_id = resolve_batch_id(args.batch)
     batch = load_batch(batch_id)
@@ -77,7 +106,7 @@ def cmd_background(args) -> dict[str, Any]:
     item = next((i for i in batch["items"] if i["n"] == args.item), None)
     if item is None:
         raise CardsError(f"В партии нет позиции {args.item}.")
-    src = pick_source(batch, args.file)
+    src = pick_source(batch, args.file, getattr(args, "pick", None))
     out_dir = paths.work_dir(batch_id) / "backgrounds"
     out_dir.mkdir(parents=True, exist_ok=True)
     name = f"{int(item['n']):02d}"

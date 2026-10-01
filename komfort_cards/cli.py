@@ -26,6 +26,7 @@ COMMANDS: dict[str, tuple[str, str, str]] = {
     "cutout": ("cutout", "cmd_cutout", "вырезать товары с белого фона"),
     "prompt": ("prompts", "cmd_prompt", "показать промпт фона для позиции"),
     "background": ("background", "cmd_background", "забрать сгенерированный фон для позиции"),
+    "generations": ("background", "cmd_generations", "список фонов, сгенерированных в этом чате, по номерам"),
     "render": ("render", "cmd_render", "собрать карточки (фон + товар + дизайн)"),
     "status": ("qa", "cmd_status", "показать статусы позиций партии"),
     "review": ("qa", "cmd_review", "отметить итог визуальной проверки карточки: --ok или --issue «причина»"),
@@ -77,6 +78,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--batch", help="id партии; по умолчанию последняя")
     p.add_argument("item", type=int, help="номер позиции")
     p.add_argument("--file", help="путь к картинке фона; по умолчанию самая новая генерация Codex")
+    p.add_argument("--pick", type=int, help="номер генерации в этом чате (см. generations), например 1 — первая")
+
+    p = add("generations")
+    p.add_argument("--batch", help="id партии (чтобы отметить, какие фоны уже взяты); по умолчанию последняя")
 
     p = add("review")
     p.add_argument("--batch", help="id партии; по умолчанию последняя")

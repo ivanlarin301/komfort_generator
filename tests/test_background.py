@@ -93,6 +93,21 @@ def test_background_command_takes_newest_and_refuses_reuse(isolated_output, fake
         background.cmd_background(argparse.Namespace(batch=batch["batch_id"], item=2, file=None))
 
 
+def test_pick_takes_an_earlier_generation_by_number(isolated_output, fake_codex):
+    first, second = fake_codex / "exec-first.png", fake_codex / "exec-second.png"
+    framed_image().save(first)
+    framed_image().save(second)
+    os.utime(first, (time.time() - 60, time.time() - 60))
+    assert codex.chat_generations() == [first, second]  # No.1 = the first generated in this chat
+    batch = make_confirmed_batch()
+    result = background.cmd_background(argparse.Namespace(batch=batch["batch_id"], item=2, file=None, pick=1))
+    assert result["source"] == str(first)
+    listing = background.cmd_generations(argparse.Namespace(batch=batch["batch_id"]))
+    assert [g["used_by"] for g in listing["generations"]] == [2, None]
+    with pytest.raises(CardsError):
+        background.cmd_background(argparse.Namespace(batch=batch["batch_id"], item=1, file=None, pick=5))
+
+
 def test_background_keeps_previous_attempts(isolated_output, fake_codex, tmp_path):
     batch = make_confirmed_batch()
     first, second = tmp_path / "1.png", tmp_path / "2.png"
