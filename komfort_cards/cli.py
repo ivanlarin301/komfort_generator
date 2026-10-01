@@ -24,7 +24,8 @@ COMMANDS: dict[str, tuple[str, str, str]] = {
     "check": ("batch", "cmd_check", "проверить batch.json и показать сводку для сверки с оператором"),
     "confirm": ("batch", "cmd_confirm", "отметить, что оператор подтвердил сводку"),
     "cutout": ("cutout", "cmd_cutout", "вырезать товары с белого фона"),
-    "prompt": ("prompts", "cmd_prompt", "показать промпт фона для позиции"),
+    "prompt": ("prompts", "cmd_prompt", "показать промпт генерации (товар в сцене) и путь к референсу"),
+    "reference": ("cutout", "cmd_reference", "подготовить чистый референс товара (с учётом photo_crop)"),
     "background": ("background", "cmd_background", "забрать сгенерированный фон для позиции"),
     "generations": ("background", "cmd_generations", "список фонов, сгенерированных в этом чате, по номерам"),
     "render": ("render", "cmd_render", "собрать карточки (фон + товар + дизайн)"),
@@ -71,6 +72,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("items", nargs="*", type=int, help="номера позиций; по умолчанию все")
 
     p = add("prompt")
+    p.add_argument("--batch", help="id партии; по умолчанию последняя")
+    p.add_argument("item", type=int, help="номер позиции")
+
+    p = add("reference")
     p.add_argument("--batch", help="id партии; по умолчанию последняя")
     p.add_argument("item", type=int, help="номер позиции")
 

@@ -6,6 +6,7 @@
   "category": "dry_mix",
   "photo": "_work/photos/01.png",
   "photo_note": "мешок клея GERKULES GM-245",
+  "product_desc": "a 25 kg paper bag of GERKULES GM-245 tile adhesive, white with a red top band, a black block with the large GERKULES lettering and a big red GM-245 at the bottom",
   "photo_crop": null,
   "texts": {
     "title": "Клей GERMIX GM-245 PRO",
@@ -17,7 +18,7 @@
     "features_layout": "row"
   },
   "sources": {"title": "table", "badge": "packaging", "plate": "packaging"},
-  "layout": {},
+  "layout": {"mode": "scene", "bg_shift_y": 0, "bg_zoom": 1.0},
   "status": "planned",
   "issues": [],
   "files": {}

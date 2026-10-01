@@ -63,6 +63,22 @@ def load_icons() -> dict[str, Path]:
     return {key: paths.ICONS_DIR / spec["file"] for key, spec in (data.get("icons") or {}).items()}
 
 
+def frame_transform(layout: dict[str, Any]) -> tuple[float, float]:
+    """Clamp bg_zoom (1..1.4) and bg_shift_y so the scaled scene still covers the whole canvas (no empty strips)."""
+    zoom = min(1.4, max(1.0, float(layout.get("bg_zoom") or 1.0)))
+    overflow = CANVAS[1] * (zoom - 1) / 2
+    shift = min(overflow, max(-overflow, float(layout.get("bg_shift_y") or 0)))
+    return zoom, shift
+
+
+def displayed_box(box: list[int], zoom: float, shift: float) -> list[int]:
+    """Where a scene-space box lands after the centre zoom and vertical shift."""
+    cx, cy = CANVAS[0] / 2, CANVAS[1] / 2
+    x0, y0, x1, y1 = box
+    return [round((x0 - cx) * zoom + cx), round((y0 - cy) * zoom + cy + shift),
+            round((x1 - cx) * zoom + cx), round((y1 - cy) * zoom + cy + shift)]
+
+
 def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
     """Template input for one item; image paths become file:// URLs."""
     root = paths.batch_dir(batch["batch_id"])
@@ -79,6 +95,12 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
                  "style": plate.get("style") or "green", "plus": plate.get("plus", True)}
     else:
         plate = None
+    layout = dict(item.get("layout") or {})
+    composite = layout.get("mode") == "composite"
+    zoom, shift = frame_transform(layout)
+    scene_box = None
+    if not composite and isinstance(item.get("scene"), dict) and item["scene"].get("box"):
+        scene_box = displayed_box(item["scene"]["box"], zoom, shift)
     icons = load_icons()
     features = []
     for feature in texts.get("features") or []:
@@ -96,9 +118,12 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
         "code": item.get("code") or "",
         "price": format_price(item.get("price"), space=" "),
         "background": url(files.get("background")),
-        "product": url(files.get("cutout")),
+        "product": url(files.get("cutout")) if composite else None,  # scene mode: the product is in the photo
+        "scene_box": scene_box,
+        "bg_zoom": zoom,
+        "bg_shift_y": shift,
         "logo": file_url(paths.LOGO_FILE) if paths.LOGO_FILE.is_file() else None,
-        "layout": item.get("layout") or {},
+        "layout": layout,
         "shade": background_shade(background),
     }
 

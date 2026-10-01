@@ -1,6 +1,27 @@
-# Background prompts for Codex image generation (FR-5).
-# One category = one scene recipe, so a batch keeps the same light, tone and camera height.
-# The owner may edit `scene` and `surface` texts; keep `bans` — text or products in the background ruin the card.
+# Prompts for Codex image generation (FR-4, FR-5).
+#
+# Main mode "scene" (design D1-v2): Codex generates the product from the operator's photo (attached as a
+# reference) inside a professionally lit scene. Inside a batch, items of one category rotate through
+# `surfaces` and `scenes`, so the cards do not repeat. The owner may edit these texts freely.
+#
+# Fallback mode "composite" (layout.mode = composite): an empty background from `style` + `bans`, and the
+# product cut out of the photo is placed on it by the template.
+
+scene_style: >-
+  Professional commercial product photograph for a vertical 4:5 Instagram advertisement (1080x1350).
+  Use the attached photo only as the product reference and recreate exactly this product: {product}.
+  Keep its real shape and proportions, colours, cap and handles, label layout, logo and the large brand
+  and product-name lettering, and render it as a real three-dimensional object, not a flat cut-out.
+  The product stands on {surface}, {scene}. It is in the centre of the frame, occupying about 55-65% of
+  the frame height, with its base at about 75% of the frame height; the camera is slightly above the
+  product with a natural perspective. Modern, stylish studio lighting: a soft key light from the upper
+  left, a gentle rim light, a realistic contact shadow and soft reflections on the surface; shallow depth
+  of field with a softly blurred background; slightly dark, premium mood. Keep the top 25% and the bottom
+  20% of the frame calm and darker, without important details: text will be added there later.
+scene_bans: >-
+  Do not add any other text, letters, numbers, logos, price tags, stickers, watermarks or borders.
+  No people, no hands, no other products or packaging.
+
 style: >-
   Photorealistic background photo for a vertical 4:5 product advertisement card (1080x1350).
   {scene}. In the centre foreground there is an empty, clearly visible {surface} where a product
@@ -12,48 +33,73 @@ style: >-
 bans: >-
   No products, no packaging, no boxes or bags in the foreground, no people, no hands, no text, no
   letters, no numbers, no logos, no signs, no watermarks, no frames or borders.
+
 categories:
   dry_mix:
     label: "Сухие смеси, клеи, штукатурки, наливные полы"
-    scene: "A room under renovation with bare grey plaster walls, stacked ceramic tiles and a few hand tools far in the blurred background"
-    surface: "concrete floor"
+    scenes:
+      - "in a room under renovation with bare grey plaster walls and stacked ceramic tiles far in the blurred background"
+      - "in a new apartment being finished, with a mixing bucket and trowels far in the blurred background"
+      - "in a bright interior under renovation with a freshly tiled wall far in the blurred background"
+    surfaces: ["a dusty concrete floor", "a wooden pallet", "a large ceramic floor tile", "a rough plywood board"]
   paint:
-    label: "Краски, эмали, грунтовки, лаки"
-    scene: "A freshly renovated room with a protective drop cloth, a stepladder and paint rollers far in the blurred background"
-    surface: "wooden workbench top"
+    label: "Краски, эмали, грунтовки, лаки, антисептики"
+    scenes:
+      - "in a freshly painted room with a drop cloth, a stepladder and paint rollers far in the blurred background"
+      - "on a wooden terrace by a country house, warm evening light, garden far in the blurred background"
+      - "in a carpentry workshop with planks and tools on the wall far in the blurred background"
+    surfaces: ["a rough dark wooden workbench", "weathered wooden deck boards", "a light birch plywood sheet", "a concrete floor with a few paint drops"]
   boards:
     label: "Утеплитель, плиты, гипсокартон, OSB, фанера, кровля"
-    scene: "A large building materials warehouse with pallets and tall metal racks far in the blurred background"
-    surface: "patch of warehouse concrete floor"
+    scenes:
+      - "in a large building materials warehouse with pallets and tall metal racks far in the blurred background"
+      - "on a construction site of a house frame, daylight, blurred background"
+    surfaces: ["a warehouse concrete floor", "a wooden pallet", "a stack of plywood sheets"]
   sealants:
     label: "Герметики, монтажная пена, клей в тубах и баллонах"
-    scene: "A tidy workshop with tools hanging on a pegboard wall far in the blurred background"
-    surface: "wooden workbench top"
+    scenes:
+      - "in a tidy workshop with tools hanging on a pegboard wall far in the blurred background"
+      - "in a bathroom under renovation with fresh tiles far in the blurred background"
+      - "by a new window frame being installed, blurred background"
+    surfaces: ["a wooden workbench top", "a white tiled countertop", "a window sill"]
   tools:
     label: "Инструменты и оборудование"
-    scene: "A construction site or workshop with scaffolding and building materials far in the blurred background"
-    surface: "concrete floor"
+    scenes:
+      - "on a construction site with scaffolding and building materials far in the blurred background"
+      - "in a spacious workshop with shelves of tools far in the blurred background"
+    surfaces: ["a concrete floor", "a wooden pallet", "a steel workbench"]
   ventilation:
     label: "Вентиляция и сантехника"
-    scene: "A clean light-grey studio with soft abstract green shapes and gentle gradients"
-    surface: "light grey studio floor"
+    scenes:
+      - "in a clean light-grey studio with soft abstract green shapes and gentle gradients"
+      - "in a modern bathroom with light tiles, softly blurred"
+    surfaces: ["a light grey studio floor", "a white stone countertop"]
   garden:
     label: "Сад, огород, грунты, садовый инвентарь"
-    scene: "A garden with green lawn, flower beds and a house far in the blurred background, daylight"
-    surface: "patch of green lawn"
+    scenes:
+      - "in a garden with green lawn, flower beds and a house far in the blurred background, daylight"
+      - "by a vegetable garden with young seedlings far in the blurred background, morning light"
+    surfaces: ["a patch of green lawn", "a wooden garden table", "garden paving stones"]
   outdoor:
     label: "Отдых, пикник, бассейны, надувные товары"
-    scene: "A summer outdoor scene with a picnic area on a lawn, warm daylight, softly blurred trees"
-    surface: "picnic blanket on the lawn"
+    scenes:
+      - "on a sunny summer lawn with trees far in the blurred background"
+      - "by a swimming pool on a summer day, blurred background"
+    surfaces: ["a picnic blanket on the lawn", "a wooden pool deck"]
   auto:
     label: "Автохимия и автотовары"
-    scene: "A clean garage or car wash with a car far in the blurred background"
-    surface: "garage concrete floor"
+    scenes:
+      - "in a clean modern garage with a car far in the blurred background"
+      - "at a car wash with water droplets in the air, blurred background"
+    surfaces: ["a garage concrete floor", "a metal workbench"]
   home:
     label: "Посуда, интерьер, товары для дома"
-    scene: "A cosy modern kitchen interior far in the blurred background"
-    surface: "stone kitchen countertop"
+    scenes:
+      - "in a cosy modern kitchen far in the blurred background"
+      - "in a bright Scandinavian living room far in the blurred background"
+    surfaces: ["a stone kitchen countertop", "a light oak table", "a linen tablecloth"]
   default:
     label: "Прочее"
-    scene: "A neutral interior under renovation far in the blurred background"
-    surface: "concrete floor"
+    scenes:
+      - "in a neutral modern interior far in the blurred background"
+    surfaces: ["a wooden table", "a concrete floor"]

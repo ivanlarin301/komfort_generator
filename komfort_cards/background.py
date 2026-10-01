@@ -12,6 +12,7 @@ from PIL import Image
 from komfort_cards import codex, paths
 from komfort_cards.batch import load_batch, require_confirmed, resolve_batch_id, save_batch
 from komfort_cards.console import CardsError, say
+from komfort_cards.prompts import item_mode
 from komfort_cards.render import CANVAS
 
 BORDER_MAX_PX = 4     # earlier generations came out 1122x1402 with a 1px frame
@@ -50,6 +51,20 @@ def cover_resize(img: Image.Image, size: tuple[int, int] = CANVAS) -> Image.Imag
 def normalize_background(src: Path) -> Image.Image:
     with Image.open(src) as img:
         return cover_resize(trim_uniform_border(img.convert("RGB")))
+
+
+def detect_product(scene: Image.Image) -> dict[str, Any] | None:
+    """Where the generated product sits on the 1080x1350 scene (for overlap/size QA). None if not measurable."""
+    from komfort_cards import cutout
+
+    if cutout.model_file() is None:
+        say("  внимание: модель вырезки не установлена — положение товара на кадре не проверено")
+        return None
+    box, area = cutout.main_object_box(scene)
+    if not box:
+        say("  внимание: товар на кадре не найден — проверьте сцену глазами")
+        return None
+    return {"box": box, "area_ratio": area}
 
 
 def pick_source(batch: dict[str, Any], explicit: str | None, pick: int | None = None) -> Path:
@@ -118,12 +133,17 @@ def cmd_background(args) -> dict[str, Any]:
         target.rename(out_dir / f"{name}_try{k}.png")
     with Image.open(src) as original:
         original_size = list(original.size)
-    normalize_background(src).save(target, optimize=True)
+    scene_img = normalize_background(src)
+    scene_img.save(target, optimize=True)
     item.setdefault("files", {})["background"] = f"_work/backgrounds/{name}.png"
     item["background"] = {"source": str(src), "original_size": original_size,
                           "taken_at": datetime.now().isoformat(timespec="seconds")}
+    item["scene"] = detect_product(scene_img) if item_mode(item) == "scene" else None
     if item.get("status") in ("planned", "cut"):
         item["status"] = "bg_ready"
     save_batch(batch)
-    say(f"[{item['n']}] фон взят из {src.name} ({original_size[0]}×{original_size[1]}) → {item['files']['background']}")
-    return {"batch": batch_id, "item": item["n"], "background": item["files"]["background"], "source": str(src)}
+    scene = item.get("scene") or {}
+    where = f", товар занимает {scene['area_ratio']:.0%} кадра" if scene.get("area_ratio") else ""
+    say(f"[{item['n']}] кадр взят из {src.name} ({original_size[0]}×{original_size[1]}) → {item['files']['background']}{where}")
+    return {"batch": batch_id, "item": item["n"], "background": item["files"]["background"], "source": str(src),
+            "scene": item.get("scene")}

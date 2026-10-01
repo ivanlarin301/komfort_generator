@@ -199,6 +199,49 @@ def cmd_cutout(args) -> dict[str, Any]:
     return {"batch": batch_id, "items": results}
 
 
+def main_object_box(image: Image.Image, session=None) -> tuple[list[int] | None, float]:
+    """Find the hero product on a generated scene (D1-v2): bbox of the largest salient component, area ratio."""
+    from rembg import remove
+    from scipy import ndimage
+
+    session = session or _session()
+    mask = np.asarray(remove(image.convert("RGB"), session=session, only_mask=True, post_process_mask=True)) > 127
+    labels, count = ndimage.label(mask)
+    if count == 0:
+        return None, 0.0
+    sizes = ndimage.sum(mask, labels, index=np.arange(1, count + 1))
+    biggest = labels == (int(np.argmax(sizes)) + 1)
+    ys, xs = np.nonzero(biggest)
+    box = [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+    area = (box[2] - box[0]) * (box[3] - box[1]) / float(mask.size)
+    return box, round(area, 4)
+
+
+REFERENCE_MAX = 1536
+
+
+def cmd_reference(args) -> dict[str, Any]:
+    """Clean product reference for the image generator: photo cropped by photo_crop, padded on white."""
+    batch_id = resolve_batch_id(args.batch)
+    batch = load_batch(batch_id)
+    item = next((i for i in batch["items"] if i["n"] == args.item), None)
+    if item is None:
+        raise CardsError(f"В партии нет позиции {args.item}.")
+    with Image.open(paths.batch_dir(batch_id) / item["photo"]) as src:
+        photo = crop_relative(src.convert("RGB"), item.get("photo_crop"))
+    pad = int(round(max(photo.size) * 0.08))
+    canvas = Image.new("RGB", (photo.width + 2 * pad, photo.height + 2 * pad), "white")
+    canvas.paste(photo, (pad, pad))
+    canvas.thumbnail((REFERENCE_MAX, REFERENCE_MAX), Image.LANCZOS)
+    out = paths.work_dir(batch_id) / "refs" / f"{int(item['n']):02d}.png"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(out, optimize=True)
+    item.setdefault("files", {})["reference"] = out.relative_to(paths.batch_dir(batch_id)).as_posix()
+    save_batch(batch)
+    say(f"[{item['n']}] референс для генерации: {out}")
+    return {"batch": batch_id, "item": item["n"], "reference": str(out)}
+
+
 def cmd_setup_models(args) -> dict[str, Any]:
     """Download the model (first run) and prove onnxruntime works on the selftest product pasted on white."""
     from rembg import remove

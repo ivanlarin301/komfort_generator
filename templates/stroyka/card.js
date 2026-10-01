@@ -236,6 +236,12 @@
     if (!M.loaded.product || !product.naturalWidth) {
       product.style.display = "none";
       shadow.style.display = "none";
+      // Scene mode (D1-v2): the product is part of the generated photo; its box was measured by the renderer.
+      if (data.scene_box) {
+        const [x0, y0, x1, y1] = data.scene_box;
+        M.product = { zone: null, source: "scene", x: x0, y: y0, w: x1 - x0, h: y1 - y0,
+          area_ratio: +(((x1 - x0) * (y1 - y0)) / (W * H)).toFixed(3) };
+      }
       return;
     }
     const lay = data.layout || {};
@@ -277,6 +283,8 @@
     logo ? loadImage(logo, data.logo, "logo") : Promise.resolve(),
   ]).then(() => {
     if (!M.loaded.background) bg.style.display = "none";
+    const zoom = data.bg_zoom || 1, shiftY = data.bg_shift_y || 0;
+    if (zoom !== 1 || shiftY !== 0) bg.style.transform = "translateY(" + shiftY + "px) scale(" + zoom + ")";
     layoutText();
     layoutProduct();
     collectBoxes();

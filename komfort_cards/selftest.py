@@ -37,6 +37,7 @@ def selftest_batch() -> dict[str, Any]:
         "texts": {"title": "Грунтовка концентрат", "badge": ["«Dekoral» 10 л."],
                   "plate": {"value": "10 л", "label": "объём", "style": "green"}},
         "files": {"background": "_work/backgrounds/01.jpg", "cutout": "_work/cutouts/01.png"},
+        "layout": {"mode": "composite"},  # deterministic selftest: the procedural product is placed by the template
     })
     batch = {"batch_id": batch_id, "template": "stroyka", "created_at": datetime.now().isoformat(timespec="seconds"),
              "table_source": "xlsx", "confirmed": True, "items": [item]}

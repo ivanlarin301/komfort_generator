@@ -39,13 +39,44 @@ def test_cover_resize_to_canvas():
 
 
 @pytest.mark.parametrize("category", ["dry_mix", "paint", "boards", "sealants", "garden", "default"])
-def test_prompt_has_scene_surface_and_bans(category):
+def test_composite_prompt_has_surface_and_bans(category):
     scenes = prompts.load_scenes()
     text = prompts.build_prompt(category, scenes)
-    assert scenes["categories"][category]["surface"] in text
+    assert scenes["categories"][category]["surfaces"][0] in text
     for ban in ("no text", "no logos", "no people", "No products"):
         assert ban in text
     assert "{" not in text
+
+
+def scene_batch(categories):
+    items = [{"n": i, "category": c, "name": f"Антисептик {i}", "photo_note": "бутылка 1 л", "layout": {}}
+             for i, c in enumerate(categories, start=1)]
+    return {"batch_id": "x", "items": items}
+
+
+def test_scene_prompt_describes_product_and_bans_extra_text():
+    batch = scene_batch(["paint"])
+    text, variant = prompts.build_scene_prompt(batch, batch["items"][0])
+    assert "Антисептик 1, бутылка 1 л" in text and variant == 0
+    assert "three-dimensional" in text and "contact shadow" in text
+    assert "Do not add any other text" in text and "{" not in text
+
+
+def test_scene_prompts_rotate_surfaces_within_a_batch():
+    batch = scene_batch(["paint", "paint", "paint", "dry_mix"])
+    surfaces = prompts.load_scenes()["categories"]["paint"]["surfaces"]
+    used = [next(s for s in surfaces if s in prompts.build_scene_prompt(batch, item)[0]) for item in batch["items"][:3]]
+    assert len(set(used)) == 3  # three paint items -> three different surfaces
+    assert prompts.build_scene_prompt(batch, batch["items"][3])[1] == 0  # first dry_mix item starts its own rotation
+
+
+def test_variant_override_and_product_desc():
+    batch = scene_batch(["paint"])
+    item = batch["items"][0]
+    item["layout"] = {"variant": 2}
+    item["product_desc"] = "a 1 L black Tikkurila bottle"
+    text, variant = prompts.build_scene_prompt(batch, item)
+    assert variant == 2 and "a 1 L black Tikkurila bottle" in text
 
 
 def test_unknown_category_is_an_error():
