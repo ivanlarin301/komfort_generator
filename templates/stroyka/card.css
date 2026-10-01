@@ -1,0 +1,114 @@
+/* Komfort card template "stroyka" — master layout approved by the owner (prototype v7, 2026-10-01).
+   Canvas 1080x1350. Positions/sizes were measured from the owner's Canva projects
+   "К: РЕМОНТ" (base) and "К: УЛИЦА" (variations); see .kiro/specs/canva-style-cards/design.md.
+   Only font-size is ever reduced to fit text; glyphs are never stretched (FR-7). */
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../assets/fonts/OpenSans-Variable.ttf") format("truetype");
+  font-weight: 300 800;
+  font-stretch: 75% 100%;
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("../../assets/fonts/Montserrat-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+}
+
+:root {
+  --green: #7abb29;
+  --green-2: #7ebc30;
+  --plus-dark: rgb(84, 89, 70);
+  --text-shadow: 0 2px 12px rgba(0, 0, 0, .35);
+}
+
+html, body { margin: 0; padding: 0; background: #111; }
+.card {
+  position: relative; width: 1080px; height: 1350px; overflow: hidden;
+  background: #262626 linear-gradient(160deg, #3a3a3a, #161616);
+  font-kerning: normal; -webkit-font-smoothing: antialiased;
+}
+
+/* ---- photo layers ---- */
+.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.product-shadow {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 55%, rgba(0,0,0,0) 72%);
+  filter: blur(10px);
+}
+.product {
+  position: absolute; object-fit: contain;
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .35));
+}
+
+/* ---- legibility gradients (Canva: black 100% -> 0% over the top ~430px; bottom 0% at 733 -> ~95%) ---- */
+.shade-top { position: absolute; left: 0; top: 0; width: 100%; height: 430px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,0)); }
+.shade-bottom { position: absolute; left: 0; top: 733px; width: 100%; height: 617px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.92)); }
+
+/* ---- title block ---- */
+.title {
+  position: absolute; left: 78px; top: 84px; width: 924px; margin: 0;
+  font-family: "Open Sans", sans-serif; font-weight: 700; font-size: 93px; line-height: 1.12;
+  letter-spacing: -0.02em; text-transform: uppercase; color: #fff; text-shadow: var(--text-shadow);
+  white-space: nowrap;
+}
+.title.two-lines { white-space: normal; line-height: 1.08; }
+.title .accent { color: var(--green); }
+
+.subtitle-line {
+  position: absolute; left: 78px; width: 924px; margin: 0;
+  font-family: "Open Sans", sans-serif; font-weight: 700; font-size: 48px; line-height: 1.15;
+  letter-spacing: -0.01em; text-transform: uppercase; color: #fff; text-shadow: var(--text-shadow);
+  white-space: nowrap;
+}
+
+.badge {
+  position: absolute; left: 78px; max-width: 924px; box-sizing: border-box;
+  padding: 16px 30px; background: #fff; border-radius: 6px; color: #000;
+}
+.badge .l1 { display: block; font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 34px;
+  line-height: 1.2; text-transform: uppercase; white-space: nowrap; }
+.badge .l2 { display: block; font-family: "Montserrat", sans-serif; font-weight: 400; font-size: 30px;
+  line-height: 1.2; text-transform: uppercase; white-space: nowrap; }
+
+/* ---- key-spec plate, bottom-left (Canva 89,1028 341x147) ---- */
+.plate {
+  position: absolute; left: 89px; top: 1028px; width: 341px; height: 147px; box-sizing: border-box;
+  border-radius: 10px; padding: 0 18px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+/* Canva p.52: circular radial gradient, opaque centre -> translucent corners. Owner: a bit more see-through. */
+.plate.green { background: radial-gradient(circle farthest-corner at center, rgba(122,187,41,.88) 0%, rgba(126,188,48,.50) 100%); color: #fff; }
+.plate.white { background: radial-gradient(circle farthest-corner at center, rgba(255,255,255,1) 0%, rgba(255,255,255,.635) 100%); color: #000; }
+.plate .v { font-family: "Open Sans", sans-serif; font-weight: 700; font-size: 48px; line-height: 1.15; white-space: nowrap; }
+.plate .l { font-family: "Montserrat", sans-serif; font-weight: 400; font-size: 29px; line-height: 1.2; white-space: nowrap; }
+.plate.green .v, .plate.green .l { text-shadow: 0 1px 6px rgba(0, 0, 0, .25); }
+.plate.white .v { color: var(--green); }
+.plate.single .v { font-family: "Montserrat", sans-serif; font-size: 40px; }
+.plate.white.single .v { color: #000; }
+
+.plus {
+  position: absolute; left: 66px; top: 1006px; width: 44px; height: 44px; box-sizing: border-box;
+  border-radius: 7px; font-family: "Open Sans", sans-serif; font-weight: 400; font-size: 40px;
+  line-height: 38px; text-align: center;
+}
+.plus.on-green { background: #fff; color: var(--plus-dark); border: 2px solid var(--plus-dark); }
+.plus.on-white { background: var(--green); color: #fff; border: 2px solid var(--green); }
+
+/* ---- fixed footer: logo, code, price ---- */
+.logo { position: absolute; left: 101px; top: 1206px; width: 219px; height: auto; }
+.code {
+  position: absolute; right: 82px; top: 1086px; margin: 0;
+  font-family: "Montserrat", sans-serif; font-weight: 400; font-size: 45px; line-height: 55px;
+  color: #fff; text-shadow: var(--text-shadow); white-space: nowrap;
+}
+/* Price 110px like "К: УЛИЦА" (owner asked +20-30% over the base 91px); right edge 933, line box 1142..1276. */
+.price {
+  position: absolute; right: 147px; top: 1142px; margin: 0;
+  font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 110px; line-height: 134px;
+  color: #fff; text-shadow: var(--text-shadow); white-space: nowrap;
+}
+.tenge { position: absolute; left: 951px; top: 1174px; width: 47px; height: 75px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .35)); }

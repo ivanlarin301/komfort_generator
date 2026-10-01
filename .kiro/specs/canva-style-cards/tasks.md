@@ -41,7 +41,7 @@
 
 ## Фаза 2. Дизайн-слой и рендер
 
-- [ ] **TSK-003**: Шаблон `stroyka` по раскладке Canva
+- [x] **TSK-003**: Шаблон `stroyka` по раскладке Canva
   - Requirement: FR-6, FR-7, NFR-1
   - Deliverables: `templates/stroyka/card.html`, `card.css`, `fit.js`
   - Сделать:
@@ -54,7 +54,7 @@
     - визуально совпадает с пробой v7 (`prototype/card-v7.html`): цена +25% к эталону, полупрозрачная зелёная плашка по схеме Canva, зазор над товаром;
     - длинный заголовок уменьшается и переносится без искажения пропорций.
 
-- [ ] **TSK-004**: Рендерер `render`
+- [x] **TSK-004**: Рендерер `render`
   - Requirement: FR-7, FR-8, NFR-2, NFR-3
   - Deliverables: `komfort_cards/render.py`, `tests/test_render.py`, `tests/golden/selftest.png`
   - Сделать:
@@ -220,9 +220,9 @@ graph TD
 |---|---|
 | TSK-001 Каркас проекта и окружение | Complete |
 | TSK-002 Модель партии, init/check | Complete |
-| TSK-003 Шаблон stroyka | In Progress |
-| TSK-004 Рендерер | Pending |
-| TSK-005 Вырезка | Pending |
+| TSK-003 Шаблон stroyka | Complete |
+| TSK-004 Рендерер | Complete |
+| TSK-005 Вырезка | In Progress |
 | TSK-006 Фоны и промпты | Pending |
 | TSK-007 Забор вложений | Pending |
 | TSK-008 QA, превью, status | Pending |
