@@ -30,7 +30,7 @@ function Invoke-Logged([string]$what, [scriptblock]$command) {
         $ErrorActionPreference = $previous
     }
     $output | Out-File $Log -Append -Encoding utf8
-    if ($code -ne 0) { throw "$what завершилось с ошибкой (код $code). Подробности в setup.log." }
+    if ($code -ne 0) { throw "шаг «$what» не выполнен (код $code). Подробности в setup.log." }
     return $output
 }
 
@@ -58,6 +58,13 @@ function Find-Edge {
 try {
     Write-Host "Установка системы карточек «Комфорт»" -ForegroundColor White
     Write-Host "Папка: $Root"
+    if ($Root.Length -gt 80) {
+        Write-Host ""
+        Write-Host "ВНИМАНИЕ: папка проекта лежит слишком глубоко ($($Root.Length) символов в пути)." -ForegroundColor Yellow
+        Write-Host "Windows ограничивает длину путей, и часть библиотек может не установиться."
+        Write-Host "Лучше перенести папку ближе к корню диска, например D:\Комфорт, и запустить установку оттуда."
+        "WARN: long project path ($($Root.Length) chars)" | Out-File $Log -Append -Encoding utf8
+    }
 
     Write-Step "1/5 Менеджер окружения uv"
     $uv = Find-Uv
