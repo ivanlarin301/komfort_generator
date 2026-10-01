@@ -1,0 +1,59 @@
+# Background prompts for Codex image generation (FR-5).
+# One category = one scene recipe, so a batch keeps the same light, tone and camera height.
+# The owner may edit `scene` and `surface` texts; keep `bans` — text or products in the background ruin the card.
+style: >-
+  Photorealistic background photo for a vertical 4:5 product advertisement card (1080x1350).
+  {scene}. In the centre foreground there is an empty, clearly visible {surface} where a product
+  will be placed later; keep that central area completely empty. Camera at about the height of the
+  product, looking slightly down, natural perspective. Soft key light from the upper left, realistic
+  materials, slightly dark and moody tones, shallow depth of field: the background behind the surface
+  is softly blurred. The top 30% and the bottom 20% of the frame are calm and darker, with no
+  important details.
+bans: >-
+  No products, no packaging, no boxes or bags in the foreground, no people, no hands, no text, no
+  letters, no numbers, no logos, no signs, no watermarks, no frames or borders.
+categories:
+  dry_mix:
+    label: "Сухие смеси, клеи, штукатурки, наливные полы"
+    scene: "A room under renovation with bare grey plaster walls, stacked ceramic tiles and a few hand tools far in the blurred background"
+    surface: "concrete floor"
+  paint:
+    label: "Краски, эмали, грунтовки, лаки"
+    scene: "A freshly renovated room with a protective drop cloth, a stepladder and paint rollers far in the blurred background"
+    surface: "wooden workbench top"
+  boards:
+    label: "Утеплитель, плиты, гипсокартон, OSB, фанера, кровля"
+    scene: "A large building materials warehouse with pallets and tall metal racks far in the blurred background"
+    surface: "patch of warehouse concrete floor"
+  sealants:
+    label: "Герметики, монтажная пена, клей в тубах и баллонах"
+    scene: "A tidy workshop with tools hanging on a pegboard wall far in the blurred background"
+    surface: "wooden workbench top"
+  tools:
+    label: "Инструменты и оборудование"
+    scene: "A construction site or workshop with scaffolding and building materials far in the blurred background"
+    surface: "concrete floor"
+  ventilation:
+    label: "Вентиляция и сантехника"
+    scene: "A clean light-grey studio with soft abstract green shapes and gentle gradients"
+    surface: "light grey studio floor"
+  garden:
+    label: "Сад, огород, грунты, садовый инвентарь"
+    scene: "A garden with green lawn, flower beds and a house far in the blurred background, daylight"
+    surface: "patch of green lawn"
+  outdoor:
+    label: "Отдых, пикник, бассейны, надувные товары"
+    scene: "A summer outdoor scene with a picnic area on a lawn, warm daylight, softly blurred trees"
+    surface: "picnic blanket on the lawn"
+  auto:
+    label: "Автохимия и автотовары"
+    scene: "A clean garage or car wash with a car far in the blurred background"
+    surface: "garage concrete floor"
+  home:
+    label: "Посуда, интерьер, товары для дома"
+    scene: "A cosy modern kitchen interior far in the blurred background"
+    surface: "stone kitchen countertop"
+  default:
+    label: "Прочее"
+    scene: "A neutral interior under renovation far in the blurred background"
+    surface: "concrete floor"

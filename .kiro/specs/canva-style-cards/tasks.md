@@ -95,7 +95,7 @@
     - добавлено «уплотнение» маски для плоских белых товаров и `photo_crop`;
     - ограничение: стекло получается «молочным», такие позиции идут на проверку.
 
-- [ ] **TSK-006**: Фоны и промпты: `prompt`, `background`
+- [x] **TSK-006**: Фоны и промпты: `prompt`, `background`
   - Requirement: FR-5
   - Deliverables: `komfort_cards/background.py`, `komfort_cards/prompts.py`, `config/scenes.yaml`, `tests/test_background.py`, `tests/test_prompts.py`
   - Сделать:
@@ -228,8 +228,8 @@ graph TD
 | TSK-003 Шаблон stroyka | Complete |
 | TSK-004 Рендерер | Complete |
 | TSK-005 Вырезка | Complete |
-| TSK-006 Фоны и промпты | Pending |
-| TSK-007 Забор вложений | Pending |
+| TSK-006 Фоны и промпты | Complete |
+| TSK-007 Забор вложений | In Progress |
 | TSK-008 QA, превью, status | Pending |
 | TSK-009 Навык Codex, AGENTS.md, legacy | Pending |
 | TSK-010 Установщик и selftest | Pending |
