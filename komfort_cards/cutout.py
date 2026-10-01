@@ -21,8 +21,9 @@ MODEL = "isnet-general-use"
 MODELS_DIR = paths.PROJECT_ROOT / ".models"
 
 # rembg -> pymatting -> numba writes JIT caches next to site-packages; inside a deep project folder those paths
-# exceed the Windows 260-character limit (found by the clean-install test). Keep the cache in a short folder.
-os.environ.setdefault("NUMBA_CACHE_DIR", str(Path(os.environ.get("LOCALAPPDATA") or Path.home()) / "komfort-cards" / "numba"))
+# exceed the Windows 260-character limit (found by the clean-install test). Keep the cache in a short folder
+# inside the project: Codex's sandbox may only allow writes to the workspace.
+os.environ.setdefault("NUMBA_CACHE_DIR", str(MODELS_DIR / "numba"))
 MIN_ISLAND_SHARE = 0.002     # drop components smaller than 0.2% of the image
 MAX_ISLANDS = 3              # more separate pieces than this -> needs review
 COVERAGE_RANGE = (0.03, 0.95)
