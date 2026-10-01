@@ -35,6 +35,23 @@ def template_dir(template: str) -> Path:
     return path
 
 
+LIGHT_BACKGROUND = 0.40  # mean luminance above which the legibility gradients are strengthened
+TITLE_ZONE = (0, 60, 1080, 330)
+FOOTER_ZONE = (440, 1060, 1080, 1290)
+
+
+def background_shade(path: Path | None) -> dict[str, bool]:
+    """Which legibility gradients to strengthen: light generated backgrounds must not wash out white text."""
+    if not path or not path.is_file():
+        return {"top": False, "bottom": False}
+    from PIL import Image, ImageStat
+
+    with Image.open(path) as img:
+        gray = img.convert("L").resize(CANVAS)
+    lum = lambda box: ImageStat.Stat(gray.crop(box)).mean[0] / 255  # noqa: E731
+    return {"top": lum(TITLE_ZONE) > LIGHT_BACKGROUND, "bottom": lum(FOOTER_ZONE) > LIGHT_BACKGROUND}
+
+
 def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
     """Template input for one item; image paths become file:// URLs."""
     root = paths.batch_dir(batch["batch_id"])
@@ -44,6 +61,7 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
     def url(rel: str | None) -> str | None:
         return file_url(root / rel) if rel and (root / rel).is_file() else None
 
+    background = root / files["background"] if files.get("background") else None
     plate = texts.get("plate")
     if isinstance(plate, dict) and plate.get("value"):
         plate = {"value": plate["value"], "label": plate.get("label") or "",
@@ -64,6 +82,7 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
         "product": url(files.get("cutout")),
         "logo": file_url(paths.LOGO_FILE) if paths.LOGO_FILE.is_file() else None,
         "layout": item.get("layout") or {},
+        "shade": background_shade(background),
     }
 
 

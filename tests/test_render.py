@@ -42,6 +42,15 @@ def test_card_data_formats_price_and_skips_missing_images(isolated_output):
     assert data["plate"] == {"value": "250 мл", "label": "", "style": "green", "plus": True}
 
 
+def test_background_shade_boosts_gradients_only_on_light_backgrounds(tmp_path):
+    light, dark = tmp_path / "light.png", tmp_path / "dark.png"
+    Image.new("RGB", (1080, 1350), (235, 235, 230)).save(light)
+    Image.new("RGB", (1080, 1350), (40, 38, 36)).save(dark)
+    assert render.background_shade(light) == {"top": True, "bottom": True}
+    assert render.background_shade(dark) == {"top": False, "bottom": False}
+    assert render.background_shade(None) == {"top": False, "bottom": False}
+
+
 @pytest.mark.browser
 def test_selftest_layout_matches_canva_anchors_and_golden(isolated_output):
     out_png, metrics, problems = selftest.run_selftest()
