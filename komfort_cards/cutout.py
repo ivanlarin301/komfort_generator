@@ -174,6 +174,12 @@ def cmd_cutout(args) -> dict[str, Any]:
     require_confirmed(batch)
     wanted = set(args.items or [])
     items = [i for i in batch["items"] if not wanted or i["n"] in wanted]
+    from komfort_cards.prompts import item_mode
+
+    scene_items = [i["n"] for i in items if item_mode(i) == "scene"]
+    if scene_items:
+        raise CardsError(f"Позиции {scene_items} в режиме сцены: товар генерируется в кадре, вырезка не нужна.",
+                         hint="чтобы убрать лишнее с фото, задайте photo_crop и выполните reference N")
     root = paths.batch_dir(batch_id)
     out_dir = paths.work_dir(batch_id) / "cutouts"
     out_dir.mkdir(parents=True, exist_ok=True)

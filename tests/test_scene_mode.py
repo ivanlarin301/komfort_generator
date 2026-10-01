@@ -60,6 +60,45 @@ def test_scene_mode_render_reports_the_scene_box(isolated_output):
     assert metrics["boxes"]["product"] == {"x": 330, "y": 380, "w": 420, "h": 610, "right": 750, "bottom": 990}
 
 
+def test_composite_needs_the_operators_request():
+    from komfort_cards import prompts
+    from komfort_cards.console import CardsError
+
+    assert prompts.item_mode({"n": 1}) == "scene"
+    with pytest.raises(CardsError):
+        prompts.item_mode({"n": 1, "layout": {"mode": "composite"}})
+    assert prompts.item_mode({"n": 1, "layout": {"mode": "composite", "composite_reason": "вклей банку как есть"}}) == "composite"
+
+
+def test_render_rejects_homemade_cutouts(isolated_output):
+    from komfort_cards.console import CardsError
+
+    paths.batch_dir("s2").mkdir(parents=True)
+    item = {"n": 1, "code": "1", "price": "100", "texts": {"title": "Т"},
+            "layout": {"mode": "composite", "composite_reason": "просьба оператора"},
+            "files": {"cutout": "_work/cutouts/01_preserved.svg"}, "cutout": {"size": [10, 10]}}
+    with pytest.raises(CardsError):
+        render.card_data({"batch_id": "s2", "items": [item]}, item)
+
+
+def test_cutout_command_refuses_scene_items(isolated_output):
+    from komfort_cards.console import CardsError
+
+    batch = B.create_batch(1)
+    batch["confirmed"] = True
+    B.save_batch(batch)
+    with pytest.raises(CardsError):
+        cutout.cmd_cutout(argparse.Namespace(batch=batch["batch_id"], items=[]))
+
+
+def test_composite_backgrounds_also_rotate():
+    from komfort_cards import prompts
+
+    scenes = prompts.load_scenes()
+    texts = {prompts.build_prompt("paint", scenes, variant=v) for v in range(3)}
+    assert len(texts) == 3
+
+
 model_present = pytest.mark.skipif(cutout.model_file() is None, reason="модель вырезки не скачана")
 
 

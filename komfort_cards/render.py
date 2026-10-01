@@ -95,8 +95,15 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
                  "style": plate.get("style") or "green", "plus": plate.get("plus", True)}
     else:
         plate = None
+    from komfort_cards.prompts import item_mode  # local: prompts -> batch, keeps render importable on its own
+
     layout = dict(item.get("layout") or {})
-    composite = layout.get("mode") == "composite"
+    composite = item_mode(item) == "composite"
+    if composite:
+        cut = files.get("cutout") or ""
+        if not (cut.startswith("_work/cutouts/") and cut.endswith(".png") and item.get("cutout")):
+            raise CardsError(f"Позиция {item.get('n')}: вырезка должна быть PNG из команды cutout, а не «{cut}».",
+                             hint="выполните cutout N; свои маски и SVG не используются")
     zoom, shift = frame_transform(layout)
     scene_box = None
     if not composite and isinstance(item.get("scene"), dict) and item["scene"].get("box"):

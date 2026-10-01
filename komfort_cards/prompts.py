@@ -46,20 +46,31 @@ def _clean(text: str) -> str:
     return " ".join(text.split())
 
 
-def build_prompt(category: str, scenes: dict[str, Any] | None = None) -> str:
+def _pick(recipe: dict[str, Any], variant: int) -> tuple[str, str]:
+    """Surface and scene for a variant: consecutive items get different surfaces, then different scenes."""
+    surfaces = _options(recipe, "surfaces", "surface")
+    scene_list = _options(recipe, "scenes", "scene")
+    return surfaces[variant % len(surfaces)], scene_list[(variant + variant // len(surfaces)) % len(scene_list)]
+
+
+def build_prompt(category: str, scenes: dict[str, Any] | None = None, variant: int = 0) -> str:
     """Fallback "composite" mode: an empty background with a free surface in the centre."""
     scenes = scenes or load_scenes()
-    recipe = _recipe(category, scenes)
-    scene = _options(recipe, "scenes", "scene")[0]
-    surface = _options(recipe, "surfaces", "surface")[0]
+    surface, scene = _pick(_recipe(category, scenes), variant)
     style = _clean(scenes["style"]).format(scene=scene[:1].upper() + scene[1:].rstrip("."), surface=surface)
     return f"{style} {_clean(scenes['bans'])}"
 
 
 def item_mode(item: dict[str, Any]) -> str:
-    mode = (item.get("layout") or {}).get("mode") or "scene"
+    """The product is generated in the scene by default; pasting a cut-out needs the operator's explicit request."""
+    layout = item.get("layout") or {}
+    mode = layout.get("mode") or "scene"
     if mode not in MODES:
         raise CardsError(f"layout.mode «{mode}» неизвестен, ожидается одно из {MODES}.")
+    if mode == "composite" and not str(layout.get("composite_reason") or "").strip():
+        raise CardsError(
+            f"Позиция {item.get('n')}: вклейка товара (composite) разрешена только по прямой просьбе оператора.",
+            hint="уберите layout.mode (товар генерируется в сцене) или запишите слова оператора в layout.composite_reason")
     return mode
 
 
@@ -79,12 +90,8 @@ def product_description(item: dict[str, Any]) -> str:
 
 def build_scene_prompt(batch: dict[str, Any], item: dict[str, Any], scenes: dict[str, Any] | None = None) -> tuple[str, int]:
     scenes = scenes or load_scenes()
-    recipe = _recipe(item.get("category") or "default", scenes)
-    surfaces = _options(recipe, "surfaces", "surface")
-    scene_list = _options(recipe, "scenes", "scene")
     v = variant_index(batch, item)
-    surface = surfaces[v % len(surfaces)]
-    scene = scene_list[(v + v // len(surfaces)) % len(scene_list)]
+    surface, scene = _pick(_recipe(item.get("category") or "default", scenes), v)
     style = _clean(scenes["scene_style"]).format(product=product_description(item), surface=surface, scene=scene)
     return f"{style} {_clean(scenes['scene_bans'])}", v
 
@@ -106,7 +113,8 @@ def cmd_prompt(args) -> dict[str, Any]:
     category = item.get("category") or "default"
     mode = item_mode(item)
     if mode == "composite":
-        prompt, variant, reference = build_prompt(category), 0, None
+        variant = variant_index(batch, item)
+        prompt, reference = build_prompt(category, variant=variant), None
         say(f"Позиция {args.item} в режиме «вклейка»: сгенерируйте ПУСТОЙ фон без товара по промпту:")
     else:
         prompt, variant = build_scene_prompt(batch, item)
