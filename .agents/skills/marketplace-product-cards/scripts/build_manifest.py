@@ -28,8 +28,8 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 INVALID_WINDOWS_CHARS = re.compile(r'[\\/:*?"<>|]')
 
 HEADER_ALIASES = {
-    "code": {"код ах", "код", "артикул", "sku", "product code"},
-    "name": {"наименование", "название", "товар", "product name"},
+    "code": {"код ах", "кодах", "код", "артикул", "sku", "product code"},
+    "name": {"наименование", "наименование продукта", "название", "товар", "product name"},
     "photo_url": {"ссылка на фото", "фото", "photo url", "image url"},
     "product_url": {"ссылка на товар", "страница товара", "product url"},
 }
@@ -230,7 +230,7 @@ def build_manifest(project_root: Path, catalog_arg: str | None) -> dict[str, Any
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "project_root": project_root.as_posix(),
         "catalog": {
-            "path": catalog.relative_to(project_root).as_posix(),
+            "path": Path(__import__("os").path.relpath(catalog, project_root)).as_posix(),
             "sheet": sheet_name,
         },
         "run_dir": f"output/product-cards/{catalog_run_dir(catalog)}",

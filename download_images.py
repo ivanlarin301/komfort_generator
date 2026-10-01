@@ -13,8 +13,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="repla
 import pandas as pd
 from playwright.sync_api import sync_playwright
 
-CODE_COLUMN  = "Код АХ"
-NAME_COLUMN  = "Наименование"
+CODE_COLUMN_ALIASES = ("Код АХ", "КодАХ", "Код", "Артикул")
+NAME_COLUMN_ALIASES = ("Наименование", "Наименование продукта", "Название", "Товар")
 
 # Символы, запрещённые в именах папок Windows
 INVALID_CHARS = r'[\\/:*?"<>|]'
@@ -42,6 +42,15 @@ df.columns = df.columns.str.strip()
 print("Колонки:", df.columns.tolist())
 print(f"Товаров: {len(df)}\n")
 
+def resolve_column(aliases: tuple[str, ...], kind: str) -> str:
+    for label in aliases:
+        if label in df.columns:
+            return label
+    raise ValueError(f"Не найдена колонка {kind}; ожидается один из: {', '.join(aliases)}")
+
+CODE_COLUMN = resolve_column(CODE_COLUMN_ALIASES, "кода товара")
+NAME_COLUMN = resolve_column(NAME_COLUMN_ALIASES, "наименования товара")
+
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 with sync_playwright() as p:
@@ -58,7 +67,8 @@ with sync_playwright() as p:
 
     total = len(df)
     for idx, row in df.iterrows():
-        code = str(row[CODE_COLUMN]).strip()
+        raw_code = row[CODE_COLUMN]
+        code = str(int(raw_code)) if isinstance(raw_code, float) and raw_code.is_integer() else str(raw_code).strip()
         name = str(row[NAME_COLUMN]).strip()
         folder_name = safe_folder_name(name)
         folder_path = os.path.join(OUTPUT_DIR, folder_name)
