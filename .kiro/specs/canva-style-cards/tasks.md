@@ -120,7 +120,7 @@
   - Готово, когда: тесты покрывают все три источника и несовпадение количества; ручная проверка на реальной сессии Codex этого ПК (только чтение).
   - Итог 2026-10-02: на реальном журнале найдено вложение `codex-clipboard-*.png`. Дополнительно — команда `table` для точного чтения .xlsx без распознавания.
 
-- [ ] **TSK-008**: Контроль качества `qa`, превью, `status`
+- [x] **TSK-008**: Контроль качества `qa`, превью, `status`
   - Requirement: FR-8, FR-9
   - Deliverables: `komfort_cards/qa.py`, `tests/test_qa.py`
   - Сделать:
@@ -231,7 +231,7 @@ graph TD
 | TSK-005 Вырезка | Complete |
 | TSK-006 Фоны и промпты | Complete |
 | TSK-007 Забор вложений | Complete |
-| TSK-008 QA, превью, status | In Progress |
+| TSK-008 QA, превью, status | Complete |
 | TSK-009 Навык Codex, AGENTS.md, legacy | Pending |
 | TSK-010 Установщик и selftest | Pending |
 | TSK-011 Обновление и README | Pending |

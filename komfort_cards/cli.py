@@ -28,6 +28,7 @@ COMMANDS: dict[str, tuple[str, str, str]] = {
     "background": ("background", "cmd_background", "забрать сгенерированный фон для позиции"),
     "render": ("render", "cmd_render", "собрать карточки (фон + товар + дизайн)"),
     "status": ("qa", "cmd_status", "показать статусы позиций партии"),
+    "review": ("qa", "cmd_review", "отметить итог визуальной проверки карточки: --ok или --issue «причина»"),
     "list": ("batch", "cmd_list", "список партий"),
     "selftest": ("selftest", "cmd_selftest", "самопроверка: собрать тестовую карточку"),
     "setup-models": ("cutout", "cmd_setup_models", "скачать модель вырезки (для установщика)"),
@@ -76,6 +77,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--batch", help="id партии; по умолчанию последняя")
     p.add_argument("item", type=int, help="номер позиции")
     p.add_argument("--file", help="путь к картинке фона; по умолчанию самая новая генерация Codex")
+
+    p = add("review")
+    p.add_argument("--batch", help="id партии; по умолчанию последняя")
+    p.add_argument("item", type=int, help="номер позиции")
+    p.add_argument("--ok", action="store_true", help="карточка проверена и одобрена")
+    p.add_argument("--issue", help="что не так (позиция уйдёт на ручную проверку)")
 
     p = add("render")
     p.add_argument("--batch", help="id партии; по умолчанию последняя")

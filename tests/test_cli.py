@@ -22,5 +22,5 @@ def test_every_command_has_a_parser():
     parser = cli.build_parser()
     for name in cli.COMMANDS:
         args = {"prompt": ["prompt", "1"], "background": ["background", "1"], "init": ["init", "--rows", "1"],
-                "table": ["table", "x.xlsx"]}.get(name, [name])
+                "table": ["table", "x.xlsx"], "review": ["review", "1", "--ok"]}.get(name, [name])
         assert parser.parse_args(args).command == name
