@@ -27,7 +27,7 @@
   - Deliverables: `pyproject.toml`, `uv.lock`, `.python-version`, `komfort_cards/__init__.py`, `komfort_cards/__main__.py`, `komfort_cards/cli.py` (подкоманды-заглушки), `cards.cmd`, `assets/fonts/` (Open Sans 400/700, Montserrat 400/700 + `OFL.txt`), `assets/logo.png` (из файла владельца), `.gitignore` (+`input/`, `.venv/`, `setup.log`), `tests/conftest.py`
   - Готово, когда: на этом ПК `uv sync` создаёт `.venv`; `.\cards.cmd --help` выводит список команд; `pytest` запускается.
 
-- [ ] **TSK-002**: Модель партии `batch.json`, команды `init` и `check`
+- [x] **TSK-002**: Модель партии `batch.json`, команды `init` и `check`
   - Requirement: FR-2, FR-3, FR-8
   - Deliverables: `komfort_cards/batch.py`, `komfort_cards/formatting.py`, тесты `tests/test_batch.py`, `tests/test_formatting.py`
   - Сделать:
@@ -219,8 +219,8 @@ graph TD
 | Задача | Статус |
 |---|---|
 | TSK-001 Каркас проекта и окружение | Complete |
-| TSK-002 Модель партии, init/check | In Progress |
-| TSK-003 Шаблон stroyka | Pending |
+| TSK-002 Модель партии, init/check | Complete |
+| TSK-003 Шаблон stroyka | In Progress |
 | TSK-004 Рендерер | Pending |
 | TSK-005 Вырезка | Pending |
 | TSK-006 Фоны и промпты | Pending |

@@ -302,6 +302,7 @@ Codex вызывает все команды одной обёрткой из к
 | `price` | string | да | Только цифры, пробелы и запятая; в шаблоне форматируется |
 | `category` | string | да | Ключ из `scenes.yaml` |
 | `photo` | path | да | `_work/photos/NN.*`, файл существует |
+| `photo_note` | string | нет | Что Codex видит на фото — коротко, для сводки сверки (FR-2) |
 | `texts.title` | string | да | ≤ 40 символов |
 | `texts.title_accent` | string | нет | Подстрока заголовка, выделяется зелёным |
 | `texts.subtitle` | string | нет | Вариант A: белая строка |
