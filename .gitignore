@@ -4,6 +4,7 @@ __pycache__/
 tmp/
 .venv/
 .pytest_cache/
+.models/
 
 # Installer / updater logs
 setup.log
