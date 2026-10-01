@@ -19,6 +19,7 @@ from komfort_cards.console import CardsError, result, say, setup_utf8
 # dependency (e.g. the cutout model) never prevents the other commands from working.
 COMMANDS: dict[str, tuple[str, str, str]] = {
     "collect": ("collect", "cmd_collect", "забрать фото из чата Codex (или из папки input) в новую партию"),
+    "table": ("table", "cmd_table", "прочитать таблицу Excel (.xlsx) точно, без распознавания"),
     "init": ("batch", "cmd_init", "создать пустую партию на N позиций"),
     "check": ("batch", "cmd_check", "проверить batch.json и показать сводку для сверки с оператором"),
     "confirm": ("batch", "cmd_confirm", "отметить, что оператор подтвердил сводку"),
@@ -50,6 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--count", type=int, help="ожидаемое число фото товаров")
     p.add_argument("--table-index", type=int, help="номер картинки-таблицы среди вложений (1..N), она не считается фото товара")
     p.add_argument("--from-input", action="store_true", help="брать фото только из папки input/")
+
+    p = add("table")
+    p.add_argument("path", help="путь к файлу .xlsx")
 
     p = add("init")
     p.add_argument("--batch", help="id партии; по умолчанию по дате и времени")

@@ -108,7 +108,7 @@
 
 ## Фаза 4. Интеграция с Codex
 
-- [ ] **TSK-007**: Забор вложений `collect`
+- [x] **TSK-007**: Забор вложений `collect`
   - Requirement: FR-1
   - Deliverables: `komfort_cards/collect.py`, `tests/test_collect.py` + синтетические rollout-файлы в `tests/fixtures/`
   - Сделать:
@@ -118,6 +118,7 @@
     - fallback на `input/` с натуральной сортировкой;
     - понятные ошибки, код 2.
   - Готово, когда: тесты покрывают все три источника и несовпадение количества; ручная проверка на реальной сессии Codex этого ПК (только чтение).
+  - Итог 2026-10-02: на реальном журнале найдено вложение `codex-clipboard-*.png`. Дополнительно — команда `table` для точного чтения .xlsx без распознавания.
 
 - [ ] **TSK-008**: Контроль качества `qa`, превью, `status`
   - Requirement: FR-8, FR-9
@@ -229,8 +230,8 @@ graph TD
 | TSK-004 Рендерер | Complete |
 | TSK-005 Вырезка | Complete |
 | TSK-006 Фоны и промпты | Complete |
-| TSK-007 Забор вложений | In Progress |
-| TSK-008 QA, превью, status | Pending |
+| TSK-007 Забор вложений | Complete |
+| TSK-008 QA, превью, status | In Progress |
 | TSK-009 Навык Codex, AGENTS.md, legacy | Pending |
 | TSK-010 Установщик и selftest | Pending |
 | TSK-011 Обновление и README | Pending |
