@@ -2,6 +2,12 @@
 __pycache__/
 *.py[cod]
 tmp/
+.venv/
+.pytest_cache/
+
+# Installer / updater logs
+setup.log
+update.log
 
 # Browser/debug artifacts regenerated during scraping
 page_dump.html
@@ -11,6 +17,7 @@ page_dump.html
 
 # Local product data and generated media stay outside the agent-system repository
 images/
+input/
 output/
 *.xlsx
 
