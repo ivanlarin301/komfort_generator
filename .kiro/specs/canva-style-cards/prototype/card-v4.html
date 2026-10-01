@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #000; }
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; }
+  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Canva: black 100% at the top edge -> 0% at ~430px; bottom: 0% at 733px -> ~95% at the bottom edge */
+  .shade-top { position: absolute; left: 0; top: 0; width: 100%; height: 430px;
+    background: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,0)); }
+  .shade-bottom { position: absolute; left: 0; top: 733px; width: 100%; height: 617px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.92)); }
+  .title { position: absolute; left: 78px; top: 84px; max-width: 924px; white-space: nowrap;
+    font: 700 93px/1.12 'Open Sans', sans-serif; text-transform: uppercase; color: #fff;
+    letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(0,0,0,.35); }
+  .badge { position: absolute; left: 78px; max-width: 924px; white-space: nowrap; box-sizing: border-box;
+    padding: 16px 30px; background: #fff; border-radius: 6px;
+    font: 700 34px/1.2 'Montserrat', sans-serif; text-transform: uppercase; color: #000; }
+  .plate { position: absolute; left: 89px; top: 1028px; width: 341px; height: 147px; border-radius: 10px;
+    /* Canva: radial gradient #7abb29 (100%) in the centre -> #7ebc30 (63.5%) at the edges */
+    background: radial-gradient(ellipse at center, rgba(122,187,41,1) 0%, rgba(126,188,48,.635) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+  .plate .v { font: 700 48px/1.15 'Open Sans', sans-serif; }
+  .plate .l { font: 400 29px/1.2 'Montserrat', sans-serif; }
+  .plus { position: absolute; left: 66px; top: 1006px; width: 44px; height: 44px; box-sizing: border-box;
+    background: #fff; border: 2px solid rgb(84,89,70); border-radius: 7px;
+    font: 400 40px/38px 'Open Sans', sans-serif; color: rgb(84,89,70); text-align: center; }
+  /* Canva: visible logo spans x 101..320, vertical centre ~1226 */
+  .logo { position: absolute; left: 101px; top: 1206px; width: 219px; height: auto; }
+  .code { position: absolute; right: 82px; top: 1086px; font: 400 45px/55px 'Montserrat', sans-serif;
+    color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.35); white-space: nowrap; }
+  /* Owner request: price +25% vs Canva (91 -> 114px); baseline ~1245, tenge right edge aligned with code (999) */
+  .price { position: absolute; right: 163px; top: 1147px; font: 700 114px/1 'Montserrat', sans-serif;
+    color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,.35); white-space: nowrap; }
+  .tenge { position: absolute; left: 944px; top: 1165px; width: 55px; height: 80px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <img class="bg" src="bg.png" alt="">
+  <div class="shade-top"></div>
+  <div class="shade-bottom"></div>
+  <div class="title" id="title">Кружка Luminarc</div>
+  <div class="badge" id="badge">«Марли» Эклипс, 250 мл</div>
+  <div class="plate"><div class="v">250 мл</div><div class="l">объём</div></div>
+  <div class="plus">+</div>
+  <img class="logo" src="logo.png" alt="Комфорт">
+  <div class="code">КОД: 888735</div>
+  <div class="price">799</div>
+  <svg class="tenge" viewBox="0 0 44 64" aria-hidden="true">
+    <rect x="0" y="0" width="44" height="11" fill="#fff"/>
+    <rect x="0" y="19" width="44" height="11" fill="#fff"/>
+    <rect x="16" y="19" width="12" height="45" fill="#fff"/>
+  </svg>
+</div>
+<script>
+  // Fit long text by shrinking the font size only (never stretching glyphs).
+  function fit(el, maxPx, minPx) {
+    let size = maxPx;
+    el.style.fontSize = size + 'px';
+    while (el.scrollWidth > 924 && size > minPx) { size -= 1; el.style.fontSize = size + 'px'; }
+  }
+  document.fonts.ready.then(() => {
+    const title = document.getElementById('title');
+    fit(title, 93, 58);
+    const badge = document.getElementById('badge');
+    badge.style.top = (title.offsetTop + title.offsetHeight + 18) + 'px';
+    fit(badge, 34, 24);
+  });
+</script>
+</body>
+</html>
