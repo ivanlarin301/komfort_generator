@@ -133,7 +133,28 @@
       plus = el("div", "plus " + (style === "white" ? "on-white" : "on-green"));
     }
   }
-  if ((data.features || []).length) M.warnings.push("иконки-свойства пока не поддерживаются шаблоном (TSK-016)");
+  let features = null;
+  const featureItems = (data.features || []).filter((f) => f && f.text).slice(0, 3);
+  const featuresLayout = data.features_layout === "column" ? "column" : "row";
+  if (featureItems.length) {
+    features = el("div", featuresLayout === "column" ? "features-col" : "features-row");
+    featureItems.forEach((f) => {
+      const rich = String(f.text).includes("**");
+      if (featuresLayout === "column") {
+        const row = el("div", "feat", features);
+        const ico = el("div", "ico", row);
+        if (f.icon_url) { const img = el("img", "", ico); img.src = f.icon_url; img.alt = ""; }
+        const span = el("span", "", row);
+        rich ? appendRich(span, String(f.text)) : (span.textContent = String(f.text));
+      } else {
+        const chip = el("div", "chip" + (rich ? " rich" : ""), features);
+        if (f.icon_url) { const img = el("img", "", chip); img.src = f.icon_url; img.alt = ""; }
+        const span = el("span", "", chip);
+        rich ? appendRich(span, String(f.text)) : (span.textContent = String(f.text));
+      }
+      if (!f.icon_url) M.warnings.push("иконка для «" + f.text + "» не найдена");
+    });
+  }
 
   let logo = null;
   if (data.logo) {
@@ -188,7 +209,20 @@
       M.overflow.badge = widest() > TEXT_WIDTH + 0.5;
       y = badge.offsetTop + badge.offsetHeight;
     }
+    M.features_right = null;
+    if (features && featuresLayout === "row") {
+      features.style.top = (y + 16) + "px";
+      fit(features, 26, 18, () => features.scrollWidth, TEXT_WIDTH, "features");
+      y = features.offsetTop + features.offsetHeight;
+    }
     M.text_bottom = y;
+    if (features && featuresLayout === "column") {
+      features.style.top = (y + 50) + "px";
+      const rows = Array.from(features.children);
+      const widest = () => Math.max.apply(null, rows.map((r) => r.scrollWidth));
+      fit(features, 30, 20, widest, 380, "features");
+      M.features_right = features.offsetLeft + widest();
+    }
 
     if (plate) {
       const v = plate.querySelector(".v");
@@ -212,7 +246,8 @@
       const dw = product.naturalWidth * scale, dh = product.naturalHeight * scale;
       return { zone, dw, dh, left: x0 + (zw - dw) / 2 + (lay.offset_x || 0), top: y1 - dh + (lay.offset_y || 0) };
     };
-    let p = place(lay.product_zone || [PRODUCT_X[0], M.text_bottom + PRODUCT_GAP_TOP, PRODUCT_X[1], PRODUCT_BOTTOM]);
+    const zoneLeft = M.features_right ? Math.max(PRODUCT_X[0], M.features_right + 36) : PRODUCT_X[0];
+    let p = place(lay.product_zone || [zoneLeft, M.text_bottom + PRODUCT_GAP_TOP, PRODUCT_X[1], PRODUCT_BOTTOM]);
     // Never let the product bottom graze the plate edge: either clearly above it or clearly behind it.
     const bottom = p.top + p.dh;
     const overPlate = plate && p.left < PLATE_BOX[2] && p.left + p.dw > PLATE_BOX[0];
@@ -229,7 +264,7 @@
   }
 
   function collectBoxes() {
-    const nodes = { title, subtitle: subtitleLine, badge, plate, plus, logo, code, price, tenge };
+    const nodes = { title, subtitle: subtitleLine, badge, features, plate, plus, logo, code, price, tenge };
     Object.keys(nodes).forEach((k) => { if (nodes[k]) M.boxes[k] = box(nodes[k]); });
     if (M.product) M.boxes.product = { x: M.product.x, y: M.product.y, w: M.product.w, h: M.product.h,
       right: M.product.x + M.product.w, bottom: M.product.y + M.product.h };

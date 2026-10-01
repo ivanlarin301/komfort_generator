@@ -79,6 +79,29 @@ html, body { margin: 0; padding: 0; background: #111; }
 .badge .l2 { display: block; font-family: "Montserrat", sans-serif; font-weight: 400; font-size: 35px;
   line-height: 1.2; text-transform: uppercase; white-space: nowrap; }
 
+/* ---- feature callouts (FR-15): "row" chips under the subtitle (Canva p.33) or a left "column" ---- */
+/* font-size lives on the containers so fitting the container shrinks every chip/row together */
+.features-row { position: absolute; left: 78px; display: flex; gap: 12px; font-size: 26px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 12px; box-sizing: border-box; height: 62px; padding: 0 22px 0 16px;
+  background: rgba(255, 255, 255, .92); border-radius: 6px; color: #000;
+  font-family: "Montserrat", sans-serif; font-weight: 700; font-size: inherit; text-transform: uppercase; white-space: nowrap;
+}
+.chip.rich { font-weight: 400; }
+.chip b { font-weight: 700; }
+.chip img { width: 32px; height: 32px; flex: none; }
+.features-col { position: absolute; left: 78px; display: flex; flex-direction: column; gap: 20px; font-size: 30px; }
+.feat {
+  display: flex; align-items: center; gap: 18px; color: #fff; white-space: nowrap;
+  font-family: "Montserrat", sans-serif; font-weight: 700; font-size: inherit; text-transform: uppercase;
+  text-shadow: var(--text-shadow);
+}
+.feat .ico {
+  width: 64px; height: 64px; flex: none; border-radius: 50%; background: rgba(255, 255, 255, .92);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+}
+.feat .ico img { width: 34px; height: 34px; }
+
 /* ---- key-spec plate, bottom-left (Canva 89,1028 341x147) ---- */
 .plate {
   position: absolute; left: 89px; top: 1028px; width: 341px; height: 147px; box-sizing: border-box;

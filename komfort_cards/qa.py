@@ -16,9 +16,9 @@ from komfort_cards.batch import load_batch, resolve_batch_id, save_batch
 from komfort_cards.console import CardsError, say
 
 CANVAS = (1080, 1350)
-MIN_PRODUCT_AREA = 0.25      # FR-15: the product stays the main element
+MIN_PRODUCT_AREA = 0.20      # FR-15: the product stays the main element (tall product, base layout ~25%)
 OVERLAP_TOLERANCE = 8        # px of allowed contact between the product and a text element
-TOP_TEXT = ("title", "subtitle", "badge")
+TOP_TEXT = ("title", "subtitle", "badge", "features")
 FOOTER_TEXT = ("code", "price", "tenge")
 STATUS_RU = {"planned": "в плане", "cut": "вырезано", "bg_ready": "фон готов", "rendered": "собрано",
              "approved": "одобрено", "needs_review": "на проверку", "blocked": "заблокировано"}

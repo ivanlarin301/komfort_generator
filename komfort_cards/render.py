@@ -52,6 +52,17 @@ def background_shade(path: Path | None) -> dict[str, bool]:
     return {"top": lum(TITLE_ZONE) > LIGHT_BACKGROUND, "bottom": lum(FOOTER_ZONE) > LIGHT_BACKGROUND}
 
 
+def load_icons() -> dict[str, Path]:
+    """Icon key -> SVG file from config/icons.yaml (FR-15)."""
+    path = paths.CONFIG_DIR / "icons.yaml"
+    if not path.is_file():
+        return {}
+    import yaml
+
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return {key: paths.ICONS_DIR / spec["file"] for key, spec in (data.get("icons") or {}).items()}
+
+
 def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
     """Template input for one item; image paths become file:// URLs."""
     root = paths.batch_dir(batch["batch_id"])
@@ -68,13 +79,19 @@ def card_data(batch: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
                  "style": plate.get("style") or "green", "plus": plate.get("plus", True)}
     else:
         plate = None
+    icons = load_icons()
+    features = []
+    for feature in texts.get("features") or []:
+        if isinstance(feature, dict) and feature.get("text"):
+            icon = icons.get(feature.get("icon") or "")
+            features.append({"text": feature["text"], "icon_url": file_url(icon) if icon and icon.is_file() else None})
     return {
         "title": texts.get("title") or "",
         "title_accent": texts.get("title_accent") or None,
         "subtitle": texts.get("subtitle") or "",
         "badge": list(texts.get("badge") or []),
         "plate": plate,
-        "features": list(texts.get("features") or []),
+        "features": features,
         "features_layout": texts.get("features_layout") or "row",
         "code": item.get("code") or "",
         "price": format_price(item.get("price"), space=" "),

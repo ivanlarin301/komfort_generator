@@ -63,6 +63,29 @@ def test_selftest_layout_matches_canva_anchors_and_golden(isolated_output):
 
 
 @pytest.mark.browser
+@pytest.mark.parametrize("layout", ["row", "column"])
+def test_feature_callouts_never_cover_the_product(isolated_output, layout):
+    batch = selftest.selftest_batch()
+    item = batch["items"][0]
+    item["texts"].update({
+        "subtitle": "садово-строительная",
+        "features": [{"icon": "volume", "text": "100 литров"}, {"icon": "weight", "text": "до **250 кг**"},
+                     {"icon": "outdoor", "text": "для сада"}],
+        "features_layout": layout,
+        "plate": {"value": "одноколёсная", "label": "", "style": "white", "plus": False},
+    })
+    html = paths.work_dir(batch["batch_id"]) / "html" / f"features_{layout}.html"
+    html.write_text(render.build_html("stroyka", render.card_data(batch, item)), encoding="utf-8")
+    with render.browser_page() as page:
+        metrics = render.render_html_file(page, html, paths.batch_dir(batch["batch_id"]) / f"features_{layout}.png")
+    assert metrics["warnings"] == [] and not any(metrics["overflow"].values())
+    boxes = metrics["boxes"]
+    from komfort_cards.qa import _intersects
+    assert not _intersects(boxes["product"], boxes["features"], 8)
+    assert boxes["code"]["right"] == pytest.approx(998, abs=3) and boxes["price"]["right"] == pytest.approx(933, abs=3)
+
+
+@pytest.mark.browser
 def test_long_title_shrinks_then_wraps_without_overflow(isolated_output):
     batch = selftest.selftest_batch()
     item = batch["items"][0]

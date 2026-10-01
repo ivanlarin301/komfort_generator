@@ -1,0 +1,25 @@
+# Icons for feature callouts (FR-15). Codex picks a key; the file lives in assets/icons (Lucide, ISC licence).
+# Text next to an icon: up to 24 characters, numbers only from the table / packaging / komfort.kz.
+icons:
+  weight:      {file: weight.svg,        use: "вес, фасовка, грузоподъёмность"}
+  volume:      {file: beaker.svg,        use: "объём (л, мл)"}
+  size:        {file: ruler.svg,         use: "размеры, длина, толщина"}
+  diameter:    {file: diameter.svg,      use: "диаметр"}
+  area:        {file: square-dashed.svg, use: "площадь, расход на м²"}
+  dimensions:  {file: maximize-2.svg,    use: "габариты"}
+  power:       {file: zap.svg,           use: "мощность (Вт, кВт)"}
+  voltage:     {file: plug-zap.svg,      use: "напряжение, питание от сети"}
+  cable:       {file: cable.svg,         use: "длина кабеля"}
+  speed:       {file: gauge.svg,         use: "обороты, скорость, давление"}
+  temperature: {file: thermometer.svg,   use: "температура применения, термостойкость"}
+  waterproof:  {file: droplets.svg,      use: "влагостойкость, для влажных помещений"}
+  frost:       {file: snowflake.svg,     use: "морозостойкость"}
+  uv:          {file: sun.svg,           use: "УФ-стойкость, для улицы"}
+  time:        {file: clock.svg,         use: "время высыхания, схватывания"}
+  quantity:    {file: package.svg,       use: "количество в упаковке"}
+  layers:      {file: layers.svg,        use: "слои, количество слоёв"}
+  indoor:      {file: house.svg,         use: "для внутренних работ"}
+  outdoor:     {file: trees.svg,         use: "для наружных работ, сад"}
+  warranty:    {file: shield-check.svg,  use: "гарантия, защита"}
+  eco:         {file: leaf.svg,          use: "экологичный, без запаха"}
+  paint:       {file: paint-roller.svg,  use: "окраска, нанесение валиком"}
