@@ -1,0 +1,24 @@
+{
+  "n": 1,
+  "code": "1509373",
+  "name": "Клей для плитки GERMIX GM-245 PRO 25 кг",
+  "price": "4880",
+  "category": "dry_mix",
+  "photo": "_work/photos/01.png",
+  "photo_note": "мешок клея GERKULES GM-245",
+  "photo_crop": null,
+  "texts": {
+    "title": "Клей GERMIX GM-245 PRO",
+    "title_accent": null,
+    "subtitle": "",
+    "badge": ["Для керамогранита и тёплого пола"],
+    "plate": {"value": "25 кг", "label": "фасовка", "style": "green", "plus": true},
+    "features": [],
+    "features_layout": "row"
+  },
+  "sources": {"title": "table", "badge": "packaging", "plate": "packaging"},
+  "layout": {},
+  "status": "planned",
+  "issues": [],
+  "files": {}
+}

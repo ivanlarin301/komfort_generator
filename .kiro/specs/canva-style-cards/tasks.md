@@ -130,13 +130,17 @@
     - итоговый отчёт на русском.
   - Готово, когда: тесты ловят переполнение текста, пустую цену, товар вне зоны, неверный размер.
 
-- [ ] **TSK-009**: Навык Codex `komfort-cards`, AGENTS.md, вывод старого потока
+- [x] **TSK-009**: Навык Codex `komfort-cards`, AGENTS.md, вывод старого потока
   - Requirement: FR-1 … FR-9, FR-13
   - Deliverables:
     - `.agents/skills/komfort-cards/SKILL.md`, `references/text-rules.md` (правила и примеры текстов из эталона), `references/design-rules.md`, `references/qa-checklist.md`, `agents/openai.yaml`;
     - новый `AGENTS.md`;
     - перенос старого навыка и скриптов в `legacy/`, их незакоммиченные правки — отдельным коммитом до переноса.
   - Готово, когда: SKILL.md проходит по всему потоку design.md без пропусков; Codex по фразе «сделай карточки» выбирает новый навык; старого навыка нет в `.agents/skills/`.
+  - Итог 2026-10-02:
+    - поток SKILL.md пройден командами на 3 реальных фото: collect → check → confirm → cutout → background → render → review → status;
+    - выбор навыка Codex проверяется в TSK-013;
+    - добавлен CLAUDE.md, импортирующий AGENTS.md.
 
 ## Фаза 5. Развёртывание
 
@@ -232,8 +236,8 @@ graph TD
 | TSK-006 Фоны и промпты | Complete |
 | TSK-007 Забор вложений | Complete |
 | TSK-008 QA, превью, status | Complete |
-| TSK-009 Навык Codex, AGENTS.md, legacy | In Progress |
-| TSK-010 Установщик и selftest | Pending |
+| TSK-009 Навык Codex, AGENTS.md, legacy | Complete |
+| TSK-010 Установщик и selftest | In Progress |
 | TSK-011 Обновление и README | Pending |
 | TSK-012 Сквозной прогон | Pending |
 | TSK-013 Приёмка в Codex | Pending |

@@ -17,6 +17,7 @@ from komfort_cards.console import CardsError, say
 
 CANVAS = (1080, 1350)
 MIN_PRODUCT_AREA = 0.20      # FR-15: the product stays the main element (tall product, base layout ~25%)
+MAX_UPSCALE = 2.0            # a cut-out enlarged more than this looks soft (low-resolution source photo)
 OVERLAP_TOLERANCE = 8        # px of allowed contact between the product and a text element
 TOP_TEXT = ("title", "subtitle", "badge", "features")
 FOOTER_TEXT = ("code", "price", "tenge")
@@ -57,6 +58,10 @@ def check_item(batch_id: str, item: dict[str, Any]) -> list[str]:
         area = (metrics.get("product") or {}).get("area_ratio", 0)
         if area < MIN_PRODUCT_AREA:
             problems.append(f"товар занимает {area:.0%} кадра (нужно ≥ {MIN_PRODUCT_AREA:.0%}) — проверьте вырезку и фото")
+        cut_w = ((item.get("cutout") or {}).get("size") or [0])[0]
+        if cut_w and product["w"] / cut_w > MAX_UPSCALE:
+            problems.append(f"фото маленькое: товар увеличен в {product['w'] / cut_w:.1f} раза и может выглядеть мыльным "
+                            "— лучше прислать фото крупнее")
         for key in TOP_TEXT:
             if boxes.get(key) and _intersects(product, boxes[key], OVERLAP_TOLERANCE):
                 problems.append(f"товар заходит под «{key}»")

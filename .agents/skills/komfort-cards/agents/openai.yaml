@@ -1,0 +1,7 @@
+interface:
+  display_name: "Карточки Комфорт"
+  short_description: "Карточки 4:5 в дизайне Canva из фото и таблицы"
+  default_prompt: "Используй $komfort-cards: сделай карточки по прикреплённым фото и таблице (строка N = фото N)."
+
+policy:
+  allow_implicit_invocation: true

@@ -55,6 +55,14 @@ def test_problems_are_detected(rendered_batch, mutate, fragment):
     assert any(fragment in p for p in problems), problems
 
 
+def test_low_resolution_photo_is_flagged(rendered_batch):
+    item = rendered_batch["items"][0]
+    item["cutout"] = {"size": [200, 220]}  # rendered 600 px wide -> 3x upscale
+    assert any("фото маленькое" in p for p in qa.check_item(rendered_batch["batch_id"], item))
+    item["cutout"] = {"size": [500, 540]}
+    assert qa.check_item(rendered_batch["batch_id"], item) == []
+
+
 def test_check_batch_marks_needs_review_and_writes_preview(rendered_batch):
     rendered_batch["items"][1]["render"]["overflow"]["price"] = True
     report = qa.check_batch(rendered_batch)
