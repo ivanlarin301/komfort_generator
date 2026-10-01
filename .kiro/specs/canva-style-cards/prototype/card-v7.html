@@ -7,8 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;700&display=block" rel="stylesheet">
 <style>
   html, body { margin: 0; padding: 0; background: #000; }
-  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; }
-  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; background: #2a2a2a; }
+  /* Demo only: the product is baked into this old background, so the whole photo is shifted down
+     55px to lower the mug; the uncovered top strip sits under the ~95% black top gradient. */
+  .bg-fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: blur(28px) brightness(.85); transform: scale(1.12); }
+  .bg { position: absolute; left: 0; top: 55px; width: 100%; height: 100%; object-fit: cover;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0px, #000 140px);
+            mask-image: linear-gradient(to bottom, transparent 0px, #000 140px); }
   /* Canva: black 100% at the top edge -> 0% at ~430px; bottom: 0% at 733px -> ~95% at the bottom edge */
   .shade-top { position: absolute; left: 0; top: 0; width: 100%; height: 430px;
     background: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,0)); }
@@ -21,11 +27,13 @@
     padding: 16px 30px; background: #fff; border-radius: 6px;
     font: 700 34px/1.2 'Montserrat', sans-serif; text-transform: uppercase; color: #000; }
   .plate { position: absolute; left: 89px; top: 1028px; width: 341px; height: 147px; border-radius: 10px;
-    /* Canva: radial gradient #7abb29 (100%) in the centre -> #7ebc30 (63.5%) at the edges */
-    background: radial-gradient(ellipse at center, rgba(122,187,41,1) 0%, rgba(126,188,48,.635) 100%);
+    /* Canva (glue card, p.52): circular radial gradient, radius = distance to the corner,
+       #7abb29 opaque in the centre -> #7ebc30 63.5% at the corners. Owner wants it more see-through,
+       so centre 88% -> corners 50%; no blur, no border, no shadow (they hide the see-through effect). */
+    background: radial-gradient(circle farthest-corner at center, rgba(122,187,41,.88) 0%, rgba(126,188,48,.50) 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-  .plate .v { font: 700 48px/1.15 'Open Sans', sans-serif; }
-  .plate .l { font: 400 29px/1.2 'Montserrat', sans-serif; }
+  .plate .v { font: 700 48px/1.15 'Open Sans', sans-serif; text-shadow: 0 1px 6px rgba(0,0,0,.25); }
+  .plate .l { font: 400 29px/1.2 'Montserrat', sans-serif; text-shadow: 0 1px 6px rgba(0,0,0,.25); }
   .plus { position: absolute; left: 66px; top: 1006px; width: 44px; height: 44px; box-sizing: border-box;
     background: #fff; border: 2px solid rgb(84,89,70); border-radius: 7px;
     font: 400 40px/38px 'Open Sans', sans-serif; color: rgb(84,89,70); text-align: center; }
@@ -42,6 +50,7 @@
 </head>
 <body>
 <div class="card" id="card">
+  <img class="bg-fill" src="bg.png" alt="">
   <img class="bg" src="bg.png" alt="">
   <div class="shade-top"></div>
   <div class="shade-bottom"></div>
